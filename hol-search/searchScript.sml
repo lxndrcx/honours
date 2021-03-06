@@ -36,11 +36,33 @@ Triviality thingy_tests:
   (thingy [] b 0 = []) ∧
   (thingy s [] 0 = []) ∧
   (thingy [1] [1;2] 0 = [0]) ∧
-  (thingy [1;3] [1;2;1] 0 = [0;2])
+  (thingy [1] [] 0 = []) ∧
+  (thingy [1;3] [1;2;1] 0 = [0;2]) ∧
+  (thingy [1;3] [1;2;1] 1 = [1;3])
 Proof
   Cases_on ‘s’ >>
   simp[thingy_def]
 QED
 
-    
+Definition whatsit_def:
+  (whatsit s [] = 0) ∧
+  (whatsit [] b = 0) ∧
+  (whatsit (s::ss) (b::bb) =
+   if (s = b)
+   then (1 + (whatsit ss bb))
+   else 0)
+End
+
+Triviality whatsit_tests:
+  (whatsit [] [] = 0) ∧
+  (whatsit [1] [] = 0) ∧
+  (whatsit [1] [1] = 1) ∧
+  (whatsit [1] [2] = 0) ∧
+  (whatsit [1;2] [1;2] = 2) ∧
+  (whatsit [1;2] [1;3] = 1) ∧
+  (whatsit [1] [1;2] = 1)
+Proof
+  simp[whatsit_def]
+End
+
 val _ = export_theory();
