@@ -52,7 +52,7 @@ Definition oojah_def:
   (oojah s [] d = []) ∧
   (oojah (s::ss) (b::bb) d =
    if (s = b)
-   then (((whatsit (s::ss) (b::bb)), d)::(oojah (s::ss) bb (d+1)))
+   then (((1 + whatsit ss bb), d)::(oojah (s::ss) bb (d+1)))
    else ((oojah (s::ss) bb (d+1))))
 End
 
@@ -70,6 +70,16 @@ Proof
   simp[oojah_def,whatsit_def]
 QED
 
+val [oo1,oo2,oo3] = CONJUNCTS oojah_def;
 
+Definition findMatches_def:
+  findMatches s b = oojah s b 0
+End
+
+Triviality findMatches_test:
+  findMatches [1;3;4] [1;1;1;1;3;4;2] =  [(1,0); (1,1); (1,2); (3,3)]
+Proof
+  simp[findMatches_def, oojah_def, whatsit_def]
+QED
 
 val _ = export_theory();
