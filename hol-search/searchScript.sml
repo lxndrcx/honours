@@ -13,24 +13,6 @@ Definition thingy_def:
    else ((thingy (s::ss) bb (d+1))))
 End
 
-Triviality thingy_none:
-  thingy [] [] 0 = []
-Proof
-  simp[thingy_def]
-QED
-
-Triviality single_prefix_thingy:
-  thingy [1] [1;2] 0 = [0]
-Proof
-  simp[thingy_def]
-QED
-        
-Triviality double_prefix_thingy:
-  thingy [1;3] [1;2;1] 0 = [0;2]
-Proof
-  simp[thingy_def]
-QED
-
 Triviality thingy_tests:
   (thingy [] [] n = []) ∧
   (thingy [] b 0 = []) ∧
@@ -63,6 +45,31 @@ Triviality whatsit_tests:
   (whatsit [1] [1;2] = 1)
 Proof
   simp[whatsit_def]
+QED
+
+Definition oojah_def:
+  (oojah [] b d = []) ∧
+  (oojah s [] d = []) ∧
+  (oojah (s::ss) (b::bb) d =
+   if (s = b)
+   then (((whatsit (s::ss) (b::bb)), d)::(oojah (s::ss) bb (d+1)))
+   else ((oojah (s::ss) bb (d+1))))
 End
+
+Triviality oojah_tests:
+  (oojah [] [] n = []) ∧
+  (oojah [] b 0 = []) ∧
+  (oojah s [] 0 = []) ∧
+  (oojah [1] [1;2] 0 = [(1,0)]) ∧
+  (oojah [1] [] 0 = []) ∧
+  (oojah [1;3] [1;2;1] 0 = [(1,0);(1,2)]) ∧
+  (oojah [1;3] [1;2;1] 1 = [(1,1);(1,3)]) ∧
+  (oojah [1;2] [1;2;1] 0 = [(2,0);(1,2)])
+Proof
+  Cases_on ‘s’ >>
+  simp[oojah_def,whatsit_def]
+QED
+
+
 
 val _ = export_theory();
