@@ -4,82 +4,64 @@ open listTheory optionTheory;
 
 val _ = new_theory"buffer_search";
 
-Definition thingy_def:
-  (thingy [] b d = []) ∧
-  (thingy s [] d = []) ∧
-  (thingy (s::ss) (b::bb) d =
+Definition matchLength_def:
+  (matchLength s [] = 0) ∧
+  (matchLength [] b = 0) ∧
+  (matchLength (s::ss) (b::bb) =
    if (s = b)
-   then (d::(thingy (s::ss) bb (d+1)))
-   else ((thingy (s::ss) bb (d+1))))
-End
-
-Triviality thingy_tests:
-  (thingy [] [] n = []) ∧
-  (thingy [] b 0 = []) ∧
-  (thingy s [] 0 = []) ∧
-  (thingy [1] [1;2] 0 = [0]) ∧
-  (thingy [1] [] 0 = []) ∧
-  (thingy [1;3] [1;2;1] 0 = [0;2]) ∧
-  (thingy [1;3] [1;2;1] 1 = [1;3])
-Proof
-  Cases_on ‘s’ >>
-  simp[thingy_def]
-QED
-
-Definition whatsit_def:
-  (whatsit s [] = 0) ∧
-  (whatsit [] b = 0) ∧
-  (whatsit (s::ss) (b::bb) =
-   if (s = b)
-   then (1 + (whatsit ss bb))
+   then (1 + (matchLength ss bb))
    else 0)
 End
 
-Triviality whatsit_tests:
-  (whatsit [] [] = 0) ∧
-  (whatsit [1] [] = 0) ∧
-  (whatsit [1] [1] = 1) ∧
-  (whatsit [1] [2] = 0) ∧
-  (whatsit [1;2] [1;2] = 2) ∧
-  (whatsit [1;2] [1;3] = 1) ∧
-  (whatsit [1] [1;2] = 1)
+Triviality matchLength_tests:
+  (matchLength [] [] = 0) ∧
+  (matchLength [1] [] = 0) ∧
+  (matchLength [1] [1] = 1) ∧
+  (matchLength [1] [2] = 0) ∧
+  (matchLength [1;2] [1;2] = 2) ∧
+  (matchLength [1;2] [1;3] = 1) ∧
+  (matchLength [1] [1;2] = 1)
 Proof
-  simp[whatsit_def]
+  simp[matchLength_def]
 QED
 
-Definition oojah_def:
-  (oojah [] b d = []) ∧
-  (oojah s [] d = []) ∧
-  (oojah (s::ss) (b::bb) d =
-   if (s = b)
-   then (((1 + whatsit ss bb), d)::(oojah (s::ss) bb (d+1)))
-   else ((oojah (s::ss) bb (d+1))))
+Definition longestMatch_def:
+  (longestMatch [] t d b = b) ∧
+  (longestMatch s [] d b = b) ∧
+  (longestMatch (s::ss) (t::ts) d (bl,bd) =
+   if (s=t)
+   then 
+     let ml = (1 + (matchLength ss ts))
+     in if ml > bl then (longestMatch (s::ss) ts (d+1) (ml,d))
+        else (longestMatch (s::ss) ts (d+1) (bl,bd))
+   else (longestMatch (s::ss) ts (d+1) (bl,bd)))
 End
 
-Triviality oojah_tests:
-  (oojah [] [] n = []) ∧
-  (oojah [] b 0 = []) ∧
-  (oojah s [] 0 = []) ∧
-  (oojah [1] [1;2] 0 = [(1,0)]) ∧
-  (oojah [1] [] 0 = []) ∧
-  (oojah [1;3] [1;2;1] 0 = [(1,0);(1,2)]) ∧
-  (oojah [1;3] [1;2;1] 1 = [(1,1);(1,3)]) ∧
-  (oojah [1;2] [1;2;1] 0 = [(2,0);(1,2)])
+Definition findMatch_def:
+  findMatch s t = let m = (longestMatch s t 0 (0,0))
+                  in
+                    if m = (0,0)
+                    then NONE
+                    else SOME m
+End
+
+Triviality findMatch_test1:
+  findMatch [1;3;4] [1;1;1;1;3;4;2] = SOME (3,3)
+Proof
+  rpt (simp[findMatch_def, Once longestMatch_def,matchLength_def])
+QED 
+
+Triviality findMatch_tests:
+  (findMatch [] [] = NONE) ∧
+  (findMatch [] b  = NONE) ∧
+  (findMatch s []  = NONE) ∧
+  (findMatch [1] [1;2] = SOME (1,0)) ∧
+  (findMatch [1] []    = NONE) ∧
+  (findMatch [1;3] [1;2;1] = SOME (1,0)) ∧
+  (findMatch [1;2] [1;2;1] = SOME (2,0))
 Proof
   Cases_on ‘s’ >>
-  simp[oojah_def,whatsit_def]
-QED
-
-val [oo1,oo2,oo3] = CONJUNCTS oojah_def;
-
-Definition findMatches_def:
-  findMatches s b = oojah s b 0
-End
-
-Triviality findMatches_test:
-  findMatches [1;3;4] [1;1;1;1;3;4;2] =  [(1,0); (1,1); (1,2); (3,3)]
-Proof
-  simp[findMatches_def, oojah_def, whatsit_def]
+  simp[findMatch_def,longestMatch_def, matchLength_def]
 QED
 
 val _ = export_theory();
