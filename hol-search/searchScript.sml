@@ -16,6 +16,7 @@ End
 Triviality matchLength_tests:
   (matchLength [] [] = 0) ∧
   (matchLength [1] [] = 0) ∧
+  (matchLength [] [1] = 0) ∧
   (matchLength [1] [1] = 1) ∧
   (matchLength [1] [2] = 0) ∧
   (matchLength [1;2] [1;2] = 2) ∧
@@ -63,5 +64,34 @@ Proof
   Cases_on ‘s’ >>
   simp[findMatch_def,longestMatch_def, matchLength_def]
 QED
+
+Theorem findMatch_some_nonempty:
+  (s = [] ∨ t = []) ⇒ (findMatch s t = NONE)
+Proof
+  rw[findMatch_def,longestMatch_def] >>
+  rw[findMatch_def,longestMatch_def] >>
+  Cases_on ‘s’ >> rw[longestMatch_def]
+QED
+
+Theorem findMatch_findsMatches:
+  (findMatch s t = SOME (l,d)) = ((TAKE l s) = (TAKE l (DROP d t)))
+Proof
+  eq_tac
+  >- oh no                              
+
+(* TODO: correctness statement *)
+(* prove it's actually a match, maybe that it's the longest match *)
+Theorem realMatch:
+  (findMatch s b = SOME (l,i)) = ((EL i b) = (EL 0 s))
+Proof
+  rw[findMatch_def,longestMatch_def,matchLength_def]
+  >- (Induct_on ‘s’
+      >- (Induct_on
+                                                  
+                                                    
+        
+
+   
+(* eventually: use CakeML vectors or array type *)
 
 val _ = export_theory();
