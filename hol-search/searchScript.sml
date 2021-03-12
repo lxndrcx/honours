@@ -81,17 +81,6 @@ Proof
 
 (* TODO: correctness statement *)
 (* prove it's actually a match, maybe that it's the longest match *)
-Theorem realMatch:
-  (findMatch s b = SOME (l,i)) = ((EL i b) = (EL 0 s))
-Proof
-  rw[findMatch_def,longestMatch_def,matchLength_def]
-  >- (Induct_on ‘s’
-      >- (Induct_on
-                                                  
-                                                    
-        
-
-   
 (* eventually: use CakeML vectors or array type *)
 
 val _ = export_theory();
