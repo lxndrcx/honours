@@ -73,14 +73,16 @@ Proof
   Cases_on ‘s’ >> rw[longestMatch_def]
 QED
 
-Theorem findMatch_findsMatches:
-  (findMatch s t = SOME (l,d)) = ((TAKE l s) = (TAKE l (DROP d t)))
-Proof
-  eq_tac
-  >- oh no                              
-
 (* TODO: correctness statement *)
 (* prove it's actually a match, maybe that it's the longest match *)
+(* Theorem findMatch_findsMatches: *)
+(*   (findMatch s t = SOME (l,d)) = ((TAKE l s) = (TAKE l (DROP d t))) *)
+(* Proof *)
+(*   eq_tac *)
+(*   >- oh no                               *)
+(* QED *)
+
+
 (* eventually: use CakeML vectors or array type *)
 
 val _ = export_theory();
