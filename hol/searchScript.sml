@@ -92,9 +92,9 @@ Definition longestMatch2_def:
    else
         if (HD s = HD t)
         then 
-          let ml = (1 + (matchLength2 (TL s) (TL t)))
-          in if (ml < 3) ∨ (ml ≤ bl) then (longestMatch2 s (TL t) (d+1) (bl,d))
-             else (longestMatch2 s (TL t) (d+1) (ml,bd))
+          let ml = (matchLength2 s t)
+          in if (ml < 3) ∨ (ml ≤ bl) then (longestMatch2 s (TL t) (d+1) (bl,bd))
+             else (longestMatch2 s (TL t) (d+1) (ml,d))
         else (longestMatch2 s (TL t) (d+1) (bl,bd)))
 Termination
   WF_REL_TAC‘measure (LENGTH o (FST o SND))’ >>
@@ -130,8 +130,7 @@ End
 
 Triviality findMatch_test1:
   findMatch [1;3;4] [1;1;1;1;3;4;2] = SOME (3,3)
-Proof
-  rpt (simp[findMatch_def, Once longestMatch_def,matchLength_def])
+Proof EVAL_TAC
 QED 
 
 Triviality findMatch2_test1:
@@ -158,8 +157,7 @@ Triviality findMatch2_tests:
   (findMatch2 [1;2] [1;2] = NONE) ∧
   (findMatch2 [1;2;3] [1;2;3] = SOME (3,0)) ∧
   (findMatch2 [1;2;3] [1;1;2;3] = SOME (3,1))
-Proof
-  EVAL_TAC
+Proof EVAL_TAC
 QED
 
 Theorem findMatch_some_nonempty:
