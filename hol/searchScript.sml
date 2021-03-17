@@ -168,14 +168,20 @@ Proof
   Cases_on ‘s’ >> rw[longestMatch_def]
 QED
 
-Theorem findMatch2_short_none:
-  ((LENGTH s < 3) ∨ (LENGTH t < 3)) ⇒ (findMatch2 s t = NONE)
+Theorem findMatch2_some_nonempty:
+  (s = [] ∨ t = []) ⇒ (findMatch2 s t = NONE)
 Proof
-  rw[findMatch_def,longestMatch_def]
-  >- (Induct_on ‘s’ >- EVAL_TAC >>
-      metis_tac[longestMatch_def] 
-     )
+  rw[findMatch_def,longestMatch2_def] >>
+  rw[findMatch_def,longestMatch2_def] >>
+  EVAL_TAC
 QED
+
+(* Theorem findMatch2_short_none: *)
+(*   ((LENGTH s < 3) ∨ (LENGTH t < 3)) ⇒ (findMatch2 s t = NONE) *)
+(* Proof *)
+(*   rw[findMatch2_def,Once longestMatch2_def] >> *)
+                         
+(* QED *)
 
 
 (* TODO: correctness statement *)
@@ -188,9 +194,9 @@ QED
 (* QED *)
 
 (* length in 3-258 ; buffer up to 32K*)
-Definition staticWindow:
-  (staticWindow s
-End
+(* Definition staticWindow: *)
+(*   (staticWindow s *)
+(* End *)
         
 
 
